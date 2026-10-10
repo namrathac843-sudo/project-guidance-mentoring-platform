@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · Project Guidance &amp; Mentoring Platform</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- Chart.js is only loaded on pages that actually render charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body class="app-body" data-page="dashboard" data-requires-auth="true">
+
+  <div id="app-shell"></div>
+
+  <main id="page-content" class="page-content">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Home</a></li>
+        <li aria-current="page">Dashboard</li>
+      </ol>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <h1 id="dash-greeting">Dashboard</h1>
+        <p class="page-subtitle" id="dash-subtitle">
+          Loading your workspace…
+        </p>
+      </div>
+      <div class="page-header-actions" id="dash-quick-actions"></div>
+    </header>
+
+    <!-- Skeleton shown while the dashboard is being built by JS -->
+    <section id="dash-loading" class="loading-block" aria-live="polite">
+      <div class="skeleton skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton-grid">
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </section>
+
+    <!-- Role-specific stat cards (dash-specific) -->
+    <section id="dash-stats" class="stat-grid" hidden></section>
+
+    <!-- Role-specific quick summary panels -->
+    <section id="dash-panels" class="panel-grid" hidden></section>
+
+    <!-- Charts -->
+    <section id="dash-charts" class="chart-grid" hidden>
+      <article class="card chart-card">
+        <header class="card-header">
+          <h2>Project acceptance</h2>
+          <p class="card-subtitle">Distribution of project statuses</p>
+        </header>
+        <div class="chart-wrap">
+          <canvas id="chart-status" aria-label="Project acceptance chart"></canvas>
+          <div class="chart-empty" id="chart-status-empty" hidden>
+            No project records yet.
+          </div>
+        </div>
+      </article>
+
+      <article class="card chart-card">
+        <header class="card-header">
+          <h2>Project progress</h2>
+          <p class="card-subtitle">Completion percentage per project</p>
+        </header>
+        <div class="chart-wrap">
+          <canvas id="chart-progress" aria-label="Project progress chart"></canvas>
+          <div class="chart-empty" id="chart-progress-empty" hidden>
+            No project progress recorded yet.
+          </div>
+        </div>
+      </article>
+
+      <article class="card chart-card" id="chart-users-card" hidden>
+        <header class="card-header">
+          <h2>User distribution</h2>
+          <p class="card-subtitle">Registered users by role</p>
+        </header>
+        <div class="chart-wrap">
+          <canvas id="chart-users" aria-label="User distribution chart"></canvas>
+        </div>
+      </article>
+
+      <article class="card chart-card" id="chart-overtime-card" hidden>
+        <header class="card-header">
+          <h2>Projects submitted over time</h2>
+          <p class="card-subtitle">Submissions grouped by month</p>
+        </header>
+        <div class="chart-wrap">
+          <canvas id="chart-overtime" aria-label="Projects over time chart"></canvas>
+          <div class="chart-empty" id="chart-overtime-empty" hidden>
+            No submissions recorded yet.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Recent activity tables (rendered by JS) -->
+    <section id="dash-tables" class="panel-grid" hidden></section>
+
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

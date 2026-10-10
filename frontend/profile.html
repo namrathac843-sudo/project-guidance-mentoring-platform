@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile · Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="app-body" data-page="profile" data-requires-auth="true">
+
+  <div id="app-shell"></div>
+
+  <main id="page-content" class="page-content">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Home</a></li>
+        <li aria-current="page">Profile</li>
+      </ol>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <h1>My Profile</h1>
+        <p class="page-subtitle">
+          Keep your information up to date so students and mentors can find you.
+        </p>
+      </div>
+      <div class="page-header-actions">
+        <button type="button" class="btn btn-outline" id="btn-edit-profile">
+          Edit profile
+        </button>
+        <button type="button" class="btn btn-primary" id="btn-save-profile" hidden>
+          Save changes
+        </button>
+        <button type="button" class="btn btn-ghost" id="btn-cancel-edit" hidden>
+          Cancel
+        </button>
+      </div>
+    </header>
+
+    <div class="profile-layout">
+
+      <!-- ========================================================= -->
+      <!-- Profile summary card                                       -->
+      <!-- ========================================================= -->
+      <aside class="card profile-card">
+        <div class="profile-avatar" id="profile-avatar">U</div>
+        <h2 class="profile-name" id="profile-name">—</h2>
+        <p class="profile-role" id="profile-role">—</p>
+        <p class="profile-dept" id="profile-dept">—</p>
+
+        <dl class="profile-meta">
+          <div>
+            <dt>Email</dt>
+            <dd id="profile-email">—</dd>
+          </div>
+          <div>
+            <dt>College</dt>
+            <dd id="profile-college">—</dd>
+          </div>
+          <div id="profile-usn-row">
+            <dt>USN / ID</dt>
+            <dd id="profile-usn">—</dd>
+          </div>
+          <div>
+            <dt>Member since</dt>
+            <dd id="profile-joined">—</dd>
+          </div>
+        </dl>
+
+        <button type="button" class="btn btn-outline btn-block" id="btn-change-avatar">
+          Change avatar
+        </button>
+        <input type="file" id="avatar-input" accept="image/*" hidden />
+        <p class="field-hint">
+          Upload a small square image. It is stored in your browser only.
+        </p>
+      </aside>
+
+      <!-- ========================================================= -->
+      <!-- Profile details                                            -->
+      <!-- ========================================================= -->
+      <section class="profile-main">
+
+        <!-- View mode -->
+        <div id="profile-view">
+          <!-- filled by profile.js -->
+        </div>
+
+        <!-- Edit mode -->
+        <div id="profile-edit" hidden>
+
+          <div class="card">
+            <header class="card-header">
+              <h2>Basic information</h2>
+            </header>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-fullname">Full name</label>
+                <input type="text" id="edit-fullname" />
+              </div>
+              <div class="form-group">
+                <label for="edit-college">College</label>
+                <input type="text" id="edit-college" />
+              </div>
+              <div class="form-group">
+                <label for="edit-department">Department</label>
+                <select id="edit-department">
+                  <option value="">Select</option>
+                  <option>Computer Science and Engineering</option>
+                  <option>Information Science and Engineering</option>
+                  <option>Electronics and Communication</option>
+                  <option>Electrical and Electronics</option>
+                  <option>Mechanical Engineering</option>
+                  <option>Civil Engineering</option>
+                  <option>Artificial Intelligence and Machine Learning</option>
+                  <option>Data Science</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="edit-phone">Contact number</label>
+                <input type="tel" id="edit-phone" placeholder="Optional" />
+              </div>
+              <div class="form-group form-group--full">
+                <label for="edit-bio">Short biography</label>
+                <textarea id="edit-bio" rows="4"
+                          placeholder="A short description of your background and interests."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Role-specific edit blocks. profile.js unhides the relevant one. -->
+          <div class="card" data-edit-role="student">
+            <header class="card-header">
+              <h2>Student details</h2>
+            </header>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-semester">Semester</label>
+                <select id="edit-semester">
+                  <option value="">Select</option>
+                  <option>1</option><option>2</option><option>3</option>
+                  <option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="edit-interests">Interests</label>
+                <input type="text" id="edit-interests"
+                       placeholder="Comma separated" />
+              </div>
+              <div class="form-group form-group--full">
+                <label for="edit-skills">Skills</label>
+                <input type="text" id="edit-skills"
+                       placeholder="Comma separated" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-edit-role="lecturer">
+            <header class="card-header">
+              <h2>Lecturer details</h2>
+            </header>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-designation">Designation</label>
+                <input type="text" id="edit-designation" />
+              </div>
+              <div class="form-group">
+                <label for="edit-experience">Years of experience</label>
+                <input type="number" id="edit-experience" min="0" max="60" />
+              </div>
+              <div class="form-group form-group--full">
+                <label for="edit-expertise">Areas of expertise</label>
+                <input type="text" id="edit-expertise"
+                       placeholder="Comma separated" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-edit-role="alumni">
+            <header class="card-header">
+              <h2>Alumni details</h2>
+            </header>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-gradyear">Graduation year</label>
+                <input type="number" id="edit-gradyear" min="1990" max="2100" />
+              </div>
+              <div class="form-group">
+                <label for="edit-company">Current company</label>
+                <input type="text" id="edit-company" />
+              </div>
+              <div class="form-group">
+                <label for="edit-job">Job designation</label>
+                <input type="text" id="edit-job" />
+              </div>
+              <div class="form-group form-group--full">
+                <label for="edit-expertise-alumni">Areas of expertise</label>
+                <input type="text" id="edit-expertise-alumni"
+                       placeholder="Comma separated" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-edit-role="admin">
+            <header class="card-header">
+              <h2>Administrator</h2>
+            </header>
+            <p class="muted">
+              Admin accounts cannot change their role through the profile page.
+              Use <a href="settings.html">Settings</a> for account-level actions.
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

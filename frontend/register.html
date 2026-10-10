@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register · Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="auth-body" data-page="register">
+
+  <div class="auth-layout">
+
+    <aside class="auth-side" aria-hidden="true">
+      <a href="index.html" class="brand brand--light">
+        <span class="brand-mark">PG</span>
+        <span class="brand-text">Project&nbsp;Guidance&nbsp;&amp;&nbsp;Mentoring</span>
+      </a>
+      <h2>Create your account.</h2>
+      <p>
+        Students, lecturers, and alumni can register directly. Administrator
+        accounts are created by an existing administrator only.
+      </p>
+      <ul class="auth-side-list">
+        <li><strong>Students</strong> — submit and track projects</li>
+        <li><strong>Lecturers</strong> — review submissions and mentor</li>
+        <li><strong>Alumni</strong> — mentor students from industry</li>
+      </ul>
+      <p class="auth-side-note">
+        College emails follow the pattern
+        <code>&lt;USN&gt;@gat.ac.in</code> for students.
+        Lecturers and alumni may use any email depending on the college policy.
+      </p>
+    </aside>
+
+    <main class="auth-main auth-main--wide">
+      <div class="auth-card auth-card--wide">
+        <header class="auth-card-head">
+          <h1>Create your account</h1>
+          <p>Choose your role. Fields marked with <span class="req">*</span> are required.</p>
+        </header>
+
+        <!-- Role selector -->
+        <div class="role-tabs" role="tablist" aria-label="Choose role">
+          <button type="button" class="role-tab is-active" role="tab"
+                  data-role="student" aria-selected="true">Student</button>
+          <button type="button" class="role-tab" role="tab"
+                  data-role="lecturer" aria-selected="false">Lecturer</button>
+          <button type="button" class="role-tab" role="tab"
+                  data-role="alumni" aria-selected="false">Alumni</button>
+        </div>
+
+        <form id="register-form" novalidate autocomplete="on">
+          <input type="hidden" id="reg-role" name="role" value="student" />
+
+          <!-- =============================== -->
+          <!-- Common fields                    -->
+          <!-- =============================== -->
+          <fieldset class="form-section">
+            <legend>Basic information</legend>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="reg-fullname">Full name <span class="req">*</span></label>
+                <input type="text" id="reg-fullname" name="fullName" required
+                       placeholder="e.g. Ananya Sharma" />
+                <p class="field-error" data-error-for="reg-fullname" role="alert"></p>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-email">College email address <span class="req">*</span></label>
+                <input type="email" id="reg-email" name="email" required
+                       placeholder="you@gat.ac.in" />
+                <p class="field-hint" id="email-hint">
+                  Format: <code>&lt;USN&gt;@gat.ac.in</code>
+                </p>
+                <p class="field-error" data-error-for="reg-email" role="alert"></p>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-college">College name <span class="req">*</span></label>
+                <input type="text" id="reg-college" name="collegeName" required
+                       placeholder="e.g. Global Academy of Technology" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-department">Department <span class="req">*</span></label>
+                <select id="reg-department" name="department" required>
+                  <option value="">Select department</option>
+                  <option>Computer Science and Engineering</option>
+                  <option>Information Science and Engineering</option>
+                  <option>Electronics and Communication</option>
+                  <option>Electrical and Electronics</option>
+                  <option>Mechanical Engineering</option>
+                  <option>Civil Engineering</option>
+                  <option>Artificial Intelligence and Machine Learning</option>
+                  <option>Data Science</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- =============================== -->
+          <!-- Student-specific fields          -->
+          <!-- =============================== -->
+          <fieldset class="form-section" data-role-section="student">
+            <legend>Student details</legend>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="reg-usn">USN <span class="req">*</span></label>
+                <input type="text" id="reg-usn" name="usn" maxlength="10"
+                       placeholder="e.g. 1GA21CS001" style="text-transform: uppercase;" />
+                <p class="field-hint">
+                  The USN must match the part before <code>@gat.ac.in</code> in your email.
+                </p>
+                <p class="field-error" data-error-for="reg-usn" role="alert"></p>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-semester">Semester</label>
+                <select id="reg-semester" name="semester">
+                  <option value="">Select semester</option>
+                  <option>1</option><option>2</option><option>3</option>
+                  <option>4</option><option>5</option><option>6</option>
+                  <option>7</option><option>8</option>
+                </select>
+              </div>
+
+              <div class="form-group form-group--full">
+                <label for="reg-skills">Skills and interests</label>
+                <input type="text" id="reg-skills" name="skills"
+                       placeholder="Comma separated, e.g. Python, IoT, Machine Learning" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- =============================== -->
+          <!-- Lecturer-specific fields         -->
+          <!-- =============================== -->
+          <fieldset class="form-section" data-role-section="lecturer" hidden>
+            <legend>Lecturer details</legend>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="reg-designation">Designation</label>
+                <input type="text" id="reg-designation" name="designation"
+                       placeholder="e.g. Assistant Professor" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-experience">Years of experience</label>
+                <input type="number" id="reg-experience" name="experienceYears"
+                       min="0" max="60" placeholder="e.g. 8" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-usn-lecturer">Institutional ID (optional)</label>
+                <input type="text" id="reg-usn-lecturer" name="usn"
+                       placeholder="Faculty ID if applicable" />
+              </div>
+
+              <div class="form-group form-group--full">
+                <label for="reg-expertise">Areas of expertise</label>
+                <input type="text" id="reg-expertise" name="expertise"
+                       placeholder="Comma separated, e.g. Databases, Distributed Systems" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- =============================== -->
+          <!-- Alumni-specific fields           -->
+          <!-- =============================== -->
+          <fieldset class="form-section" data-role-section="alumni" hidden>
+            <legend>Alumni details</legend>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="reg-grad-dept">Graduation department</label>
+                <input type="text" id="reg-grad-dept" name="graduationDepartment"
+                       placeholder="e.g. Computer Science" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-grad-year">Graduation year</label>
+                <input type="number" id="reg-grad-year" name="graduationYear"
+                       min="1990" max="2100" placeholder="e.g. 2020" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-company">Current company</label>
+                <input type="text" id="reg-company" name="company"
+                       placeholder="e.g. Infosys" />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-job">Current job designation</label>
+                <input type="text" id="reg-job" name="jobDesignation"
+                       placeholder="e.g. Senior Software Engineer" />
+              </div>
+
+              <div class="form-group form-group--full">
+                <label for="reg-expertise-alumni">Areas of expertise</label>
+                <input type="text" id="reg-expertise-alumni" name="expertise"
+                       placeholder="Comma separated, e.g. Cloud, DevOps, Data Engineering" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- =============================== -->
+          <!-- Password                         -->
+          <!-- =============================== -->
+          <fieldset class="form-section">
+            <legend>Security</legend>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="reg-password">Password <span class="req">*</span></label>
+                <div class="input-with-action">
+                  <input type="password" id="reg-password" name="password" required
+                         minlength="8" placeholder="At least 8 characters" />
+                  <button type="button" class="input-action"
+                          data-toggle-password="reg-password"
+                          aria-label="Show password">Show</button>
+                </div>
+                <p class="field-hint">
+                  Must contain at least one letter and one number.
+                </p>
+                <p class="field-error" data-error-for="reg-password" role="alert"></p>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-confirm">Confirm password <span class="req">*</span></label>
+                <div class="input-with-action">
+                  <input type="password" id="reg-confirm" name="confirmPassword"
+                         required minlength="8" />
+                  <button type="button" class="input-action"
+                          data-toggle-password="reg-confirm"
+                          aria-label="Show password">Show</button>
+                </div>
+                <p class="field-error" data-error-for="reg-confirm" role="alert"></p>
+              </div>
+            </div>
+
+            <label class="checkbox">
+              <input type="checkbox" id="reg-terms" required />
+              <span>
+                I understand this is a classroom demonstration and that data is
+                stored in this browser and on a local Flask server.
+              </span>
+            </label>
+          </fieldset>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg"
+                  id="register-submit">
+            Create account
+          </button>
+
+          <p class="form-footer">
+            Already registered? <a href="login.html">Log in instead</a>
+          </p>
+        </form>
+
+        <div id="register-alert" class="alert" hidden role="alert"></div>
+      </div>
+
+      <p class="auth-footnote">
+        <a href="index.html">&larr; Back to home</a>
+      </p>
+    </main>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentors · Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="app-body" data-page="mentors" data-requires-auth="true">
+
+  <div id="app-shell"></div>
+
+  <main id="page-content" class="page-content">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Home</a></li>
+        <li aria-current="page">Mentors</li>
+      </ol>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <h1>Find a mentor</h1>
+        <p class="page-subtitle">
+          Browse lecturers and alumni, filter by expertise, and request a
+          mentoring session.
+        </p>
+      </div>
+    </header>
+
+    <!-- Two-column layout: filters + mentor grid -->
+    <div class="split-layout">
+
+      <aside class="split-side card">
+        <h2 class="side-heading">Filters</h2>
+
+        <div class="form-group">
+          <label for="mentor-search">Search</label>
+          <input type="search" id="mentor-search" placeholder="Name, company, designation…" />
+        </div>
+
+        <div class="form-group">
+          <label for="mentor-role">Role</label>
+          <select id="mentor-role">
+            <option value="">All mentors</option>
+            <option value="lecturer">Lecturers only</option>
+            <option value="alumni">Alumni only</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mentor-dept">Department</label>
+          <select id="mentor-dept">
+            <option value="">All departments</option>
+            <option>Computer Science and Engineering</option>
+            <option>Information Science and Engineering</option>
+            <option>Electronics and Communication</option>
+            <option>Electrical and Electronics</option>
+            <option>Mechanical Engineering</option>
+            <option>Civil Engineering</option>
+            <option>Artificial Intelligence and Machine Learning</option>
+            <option>Data Science</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="mentor-expertise">Expertise contains</label>
+          <input type="text" id="mentor-expertise" placeholder="e.g. Machine Learning" />
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-block" id="mentor-clear">
+          Clear filters
+        </button>
+      </aside>
+
+      <section class="split-main">
+        <p class="list-count" id="mentor-count">0 mentors</p>
+
+        <div class="mentor-grid" id="mentor-grid" aria-live="polite"></div>
+
+        <div class="empty-state" id="mentor-empty" hidden>
+          <div class="empty-illustration" aria-hidden="true">🎓</div>
+          <h2>No mentors match your filters</h2>
+          <p>Try clearing the filters, or check back once more lecturers and alumni register.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Student's pending / accepted requests -->
+    <section class="card" id="my-requests-card" hidden>
+      <header class="card-header">
+        <h2>My mentoring requests</h2>
+        <p class="card-subtitle">Track the status of requests you have sent.</p>
+      </header>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Mentor</th>
+              <th scope="col">Topic</th>
+              <th scope="col">Sent</th>
+              <th scope="col">Status</th>
+              <th scope="col">Mentor's note</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="my-requests-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Mentor's incoming requests (visible to lecturers/alumni) -->
+    <section class="card" id="incoming-requests-card" hidden>
+      <header class="card-header">
+        <h2>Incoming mentoring requests</h2>
+        <p class="card-subtitle">Respond to students who requested your guidance.</p>
+      </header>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Student</th>
+              <th scope="col">Topic</th>
+              <th scope="col">Message</th>
+              <th scope="col">Received</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="incoming-requests-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- Request mentoring modal                                          -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-mentor-request" hidden>
+    <div class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="modal-mentor-request-title">
+      <header class="modal-header">
+        <h2 id="modal-mentor-request-title">Request mentoring</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <input type="hidden" id="req-mentor-id" />
+        <p class="muted" id="req-mentor-context"></p>
+
+        <div class="form-group">
+          <label for="req-topic">Topic <span class="req">*</span></label>
+          <input type="text" id="req-topic" required
+                 placeholder="e.g. Help with ML model selection" />
+          <p class="field-error" data-error-for="req-topic" role="alert"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="req-message">Message</label>
+          <textarea id="req-message" rows="4"
+                    placeholder="Give the mentor some context so they can prepare."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="req-project">Related project (optional)</label>
+          <select id="req-project">
+            <option value="">None</option>
+          </select>
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-send-mentor-request">
+          Send request
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- Mentor profile viewer                                            -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-mentor-profile" hidden>
+    <div class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="mentor-profile-title">
+      <header class="modal-header">
+        <h2 id="mentor-profile-title">Mentor profile</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body" id="mentor-profile-body"></div>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close">Close</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- Response modal (accept / decline an incoming request)            -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-respond" hidden>
+    <div class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="modal-respond-title">
+      <header class="modal-header">
+        <h2 id="modal-respond-title">Respond to request</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <input type="hidden" id="respond-request-id" />
+        <input type="hidden" id="respond-action" />
+        <p class="muted" id="respond-context"></p>
+
+        <div class="form-group">
+          <label for="respond-note">Note (optional)</label>
+          <textarea id="respond-note" rows="4"
+                    placeholder="Share any useful context with the student."></textarea>
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-respond">
+          Confirm
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/mentors.js"></script>
+</body>
+</html>

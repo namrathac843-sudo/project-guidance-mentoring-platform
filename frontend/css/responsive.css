@@ -1,0 +1,156 @@
+/* =====================================================================
+   responsive.css — Media queries for tablets and phones
+   Loaded LAST so it can override earlier rules without !important
+   ===================================================================== */
+
+/* ---------- Large tablets ---------- */
+@media (max-width: 1100px) {
+  .split-layout { grid-template-columns: 1fr; }
+  .split-side { position: static; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .profile-card { position: static; }
+  .chat-layout { grid-template-columns: 280px 1fr; }
+  .hero { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 0; }
+  .hero-card--alt { margin-left: 0; }
+}
+
+/* ---------- Tablets (sidebar collapses to a drawer) ---------- */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 260px; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+  .app-body.is-sidebar-open .sidebar { transform: translateX(0); }
+
+  .topbar {
+    left: 0;
+    padding: 0 .75rem;
+  }
+  .topbar-toggle { display: inline-flex; }
+
+  .app-body #page-content {
+    margin-left: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .app-body.is-sidebar-open .shell-overlay { opacity: 1; }
+  .app-body.is-sidebar-open .shell-overlay { display: block; }
+
+  /* Stack the chat: only one column visible at a time */
+  .chat-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+  .chat-sidebar { max-height: 60vh; }
+  .chat-main { min-height: 420px; }
+  .chat-back { display: inline-flex; }
+  .chat-layout.is-thread-open .chat-sidebar { display: none; }
+  .chat-layout.is-thread-open .chat-main { display: flex; }
+  .chat-layout:not(.is-thread-open) .chat-main { display: none; }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 640px) {
+  html { font-size: 15px; }
+
+  .page-content { padding: 1rem; }
+  .page-content--flush { padding: .75rem; }
+
+  h1 { font-size: 1.35rem; }
+  h2 { font-size: 1.1rem; }
+
+  .page-header { flex-direction: column; align-items: stretch; }
+  .page-header-actions { width: 100%; }
+  .page-header-actions .btn { flex: 1; justify-content: center; }
+
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+  .stat-card { padding: .85rem 1rem; }
+  .stat-card .stat-value { font-size: 1.5rem; }
+  .stat-card .stat-icon { width: 28px; height: 28px; font-size: .9rem; }
+
+  .project-grid,
+  .mentor-grid,
+  .session-grid,
+  .chart-grid,
+  .panel-grid { grid-template-columns: 1fr; gap: .85rem; }
+
+  /* Tables become horizontally scrollable; hint the user */
+  .table-scroll {
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-scroll::after {
+    content: "Swipe →";
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: .7rem;
+    color: var(--color-text-faint);
+    background: var(--color-surface);
+    padding: 2px 6px;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: .8;
+  }
+
+  .modal { max-width: 100%; border-radius: var(--radius) var(--radius) 0 0; max-height: 92vh; }
+  .modal--lg, .modal--sm { max-width: 100%; }
+
+  /* Modal slides up from the bottom on very narrow screens */
+  .modal-backdrop { align-items: flex-end; padding: 0; }
+  .modal-backdrop .modal { width: 100%; max-height: 92vh; }
+
+  .toast-stack {
+    top: auto;
+    bottom: 1rem;
+    right: .75rem;
+    left: .75rem;
+    max-width: none;
+  }
+
+  .detail-list { grid-template-columns: 1fr; gap: .15rem; }
+  .detail-list dt { padding-top: .5rem; }
+
+  .filter-field { min-width: 100%; }
+  .filter-field--end { justify-content: flex-end; }
+
+  .chat-head { padding: .5rem .75rem; }
+  .chat-composer { padding: .5rem .75rem; }
+  .msg { max-width: 85%; }
+}
+
+/* ---------- Very small screens ---------- */
+@media (max-width: 420px) {
+  .brand-text { display: none; }
+  .topbar-search { max-width: none; }
+
+  .feature, .role-card { padding: 1rem; }
+  .auth-card { padding: 1.5rem; }
+  .card { padding: 1rem; }
+
+  .data-table { font-size: .8rem; }
+  .data-table thead th,
+  .data-table tbody td { padding: .5rem; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .sidebar, .topbar, .page-header-actions, .toast-stack,
+  .modal-backdrop, .breadcrumbs { display: none !important; }
+  .app-body #page-content { margin: 0; padding: 1rem; }
+  .card { box-shadow: none; border-color: #999; }
+}

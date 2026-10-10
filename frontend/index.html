@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Project Guidance and Mentoring Platform — connect students, lecturers, and alumni for project review and mentoring." />
+  <title>Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="landing-body" data-page="landing">
+
+  <header class="landing-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">PG</span>
+      <span class="brand-text">Project&nbsp;Guidance&nbsp;&amp;&nbsp;Mentoring</span>
+    </a>
+
+    <nav class="landing-nav" aria-label="Primary">
+      <a href="login.html" class="btn btn-ghost">Log in</a>
+      <a href="register.html" class="btn btn-primary">Register</a>
+      <button id="theme-toggle-landing" class="icon-btn" type="button"
+              aria-label="Toggle light and dark theme" title="Toggle theme">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="landing-main">
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Guide student projects.<br/>Mentor the next generation.</h1>
+        <p>
+          A single workspace where students submit projects, lecturers review
+          and approve them, and alumni share their industry experience through
+          structured mentoring sessions.
+        </p>
+
+        <div class="hero-actions">
+          <a href="register.html" class="btn btn-primary btn-lg">Get started</a>
+          <a href="login.html" class="btn btn-outline btn-lg">I already have an account</a>
+        </div>
+
+        <p class="hero-note">
+          Built as a college demonstration project. Data is stored in your
+          browser's Local Storage and on a lightweight Flask server — see the
+          README for the security limitations.
+        </p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card">
+          <div class="hero-card-row">
+            <div class="hero-avatar">S</div>
+            <div>
+              <strong>Smart Agriculture System</strong>
+              <small>Submitted · Awaiting review</small>
+            </div>
+          </div>
+          <div class="hero-progress"><span style="width:60%"></span></div>
+          <div class="hero-card-row hero-card-row--split">
+            <span class="pill pill-warn">Changes Requested</span>
+            <span>60%</span>
+          </div>
+        </div>
+
+        <div class="hero-card hero-card--alt">
+          <div class="hero-card-row">
+            <div class="hero-avatar hero-avatar--alt">L</div>
+            <div>
+              <strong>Dr. Meera Rao</strong>
+              <small>Lecturer · Computer Science</small>
+            </div>
+          </div>
+          <p class="hero-mini">"Let's discuss the methodology before the next review."</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" aria-labelledby="features-heading">
+      <h2 id="features-heading">What the platform does</h2>
+
+      <div class="feature-grid">
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">📁</div>
+          <h3>Project submission</h3>
+          <p>Upload PDF, Word, PowerPoint, or spreadsheet files. Track review status from Draft to Accepted.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">✅</div>
+          <h3>Lecturer review</h3>
+          <p>Accept, reject, or request changes with clear written feedback. Every action is logged with a timestamp.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">🎓</div>
+          <h3>Mentor discovery</h3>
+          <p>Find lecturers and alumni by expertise, department, or company. Send a mentoring request in two clicks.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">📅</div>
+          <h3>Mentoring sessions</h3>
+          <p>Schedule sessions with Google Meet or Zoom links. Participants get notified when anything changes.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">💬</div>
+          <h3>Messaging &amp; notifications</h3>
+          <p>Discuss project details inside the platform. Every action that affects you generates a notification.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon" aria-hidden="true">📊</div>
+          <h3>Progress analytics</h3>
+          <p>Interactive charts showing project status, per-project progress, user distribution, and submissions over time.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="roles" aria-labelledby="roles-heading">
+      <h2 id="roles-heading">Four roles, one workspace</h2>
+
+      <div class="role-grid">
+        <article class="role-card">
+          <h3>Students</h3>
+          <ul>
+            <li>Submit projects and track approval</li>
+            <li>Find mentors and request sessions</li>
+            <li>Read feedback and resubmit revisions</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <h3>Lecturers</h3>
+          <ul>
+            <li>Review and approve submissions</li>
+            <li>Provide structured feedback</li>
+            <li>Schedule mentoring sessions</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <h3>Alumni</h3>
+          <ul>
+            <li>Offer industry mentoring</li>
+            <li>Share Google Meet / Zoom links</li>
+            <li>Respond to mentorship requests</li>
+          </ul>
+        </article>
+
+        <article class="role-card">
+          <h3>Administrators</h3>
+          <ul>
+            <li>Manage user accounts</li>
+            <li>Monitor all projects</li>
+            <li>View platform statistics and activity</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="landing-footer">
+    <p>&copy; <span id="footer-year"></span> Project Guidance &amp; Mentoring Platform — classroom demonstration build.</p>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Small inline bootstrap for the landing page only.
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+      // If the user is already logged in, offer a quick jump to the dashboard.
+      var current = window.PGMPStorage.getCurrentSession();
+      if (current && current.userId) {
+        var actions = document.querySelector('.hero-actions');
+        if (actions) {
+          var quick = document.createElement('a');
+          quick.className = 'btn btn-outline btn-lg';
+          quick.href = 'dashboard.html';
+          quick.textContent = 'Go to my dashboard';
+          actions.appendChild(quick);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

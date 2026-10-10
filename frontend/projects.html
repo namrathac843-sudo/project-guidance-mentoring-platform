@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Projects · Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="app-body" data-page="projects" data-requires-auth="true">
+
+  <div id="app-shell"></div>
+
+  <main id="page-content" class="page-content">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="dashboard.html">Home</a></li>
+        <li aria-current="page">My Projects</li>
+      </ol>
+    </nav>
+
+    <header class="page-header">
+      <div>
+        <h1>My Projects</h1>
+        <p class="page-subtitle">
+          Create, submit, and track your projects. Lecturers can review and
+          provide feedback here.
+        </p>
+      </div>
+      <div class="page-header-actions">
+        <button type="button" class="btn btn-primary" id="btn-new-project">
+          + New project
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- Filters                                                       -->
+    <!-- ============================================================ -->
+    <section class="card filter-bar">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label for="proj-search" class="sr-only">Search projects</label>
+          <input type="search" id="proj-search" placeholder="Search by title or description…" />
+        </div>
+
+        <div class="filter-field">
+          <label for="proj-status">Status</label>
+          <select id="proj-status">
+            <option value="">All statuses</option>
+            <option>Draft</option>
+            <option>Submitted</option>
+            <option>Under Review</option>
+            <option>Accepted</option>
+            <option>Changes Requested</option>
+            <option>Rejected</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="proj-dept">Department</label>
+          <select id="proj-dept">
+            <option value="">All departments</option>
+            <option>Computer Science and Engineering</option>
+            <option>Information Science and Engineering</option>
+            <option>Electronics and Communication</option>
+            <option>Electrical and Electronics</option>
+            <option>Mechanical Engineering</option>
+            <option>Civil Engineering</option>
+            <option>Artificial Intelligence and Machine Learning</option>
+            <option>Data Science</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="proj-sort">Sort by</label>
+          <select id="proj-sort">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="title">Title (A–Z)</option>
+            <option value="progress">Progress (high → low)</option>
+          </select>
+        </div>
+
+        <div class="filter-field filter-field--end">
+          <button type="button" class="btn btn-ghost" id="proj-clear-filters">
+            Clear
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- View toggle + count                                           -->
+    <!-- ============================================================ -->
+    <div class="list-toolbar">
+      <p class="list-count" id="proj-count">0 projects</p>
+      <div class="view-toggle" role="tablist" aria-label="View mode">
+        <button type="button" class="view-btn is-active" data-view="grid"
+                role="tab" aria-selected="true" aria-label="Card view">Cards</button>
+        <button type="button" class="view-btn" data-view="table"
+                role="tab" aria-selected="false" aria-label="Table view">Table</button>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- Project listing (cards or table, swapped by JS)               -->
+    <!-- ============================================================ -->
+    <section id="proj-grid" class="project-grid" aria-live="polite"></section>
+    <section id="proj-table-wrap" class="card" hidden>
+      <div class="table-scroll">
+        <table class="data-table" id="proj-table">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Student / Team</th>
+              <th scope="col">Guide</th>
+              <th scope="col">Submitted</th>
+              <th scope="col">Deadline</th>
+              <th scope="col">Status</th>
+              <th scope="col">Progress</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="proj-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Empty state -->
+    <section id="proj-empty" class="empty-state" hidden>
+      <div class="empty-illustration" aria-hidden="true">📁</div>
+      <h2>No projects yet</h2>
+      <p id="proj-empty-msg">Create your first project to get started.</p>
+      <button type="button" class="btn btn-primary" id="btn-new-project-empty">
+        + New project
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- New / Edit project modal                                        -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-project" hidden>
+    <div class="modal modal--lg" role="dialog" aria-modal="true"
+         aria-labelledby="modal-project-title">
+      <header class="modal-header">
+        <h2 id="modal-project-title">New project</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+
+      <div class="modal-body">
+        <form id="form-project" novalidate>
+          <input type="hidden" id="project-id" />
+
+          <div class="form-group">
+            <label for="project-title">Project title <span class="req">*</span></label>
+            <input type="text" id="project-title" required maxlength="150" />
+            <p class="field-error" data-error-for="project-title" role="alert"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="project-description">Description <span class="req">*</span></label>
+            <textarea id="project-description" rows="5" required
+                      placeholder="What problem does the project solve? What is the approach?"></textarea>
+            <p class="field-error" data-error-for="project-description" role="alert"></p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="project-category">Category</label>
+              <select id="project-category">
+                <option value="">Select category</option>
+                <option>Web Application</option>
+                <option>Mobile Application</option>
+                <option>Machine Learning / AI</option>
+                <option>IoT / Embedded</option>
+                <option>Data Science / Analytics</option>
+                <option>Networking / Security</option>
+                <option>Cloud / DevOps</option>
+                <option>Research / Theoretical</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="project-department">Department</label>
+              <select id="project-department">
+                <option value="">Select department</option>
+                <option>Computer Science and Engineering</option>
+                <option>Information Science and Engineering</option>
+                <option>Electronics and Communication</option>
+                <option>Electrical and Electronics</option>
+                <option>Mechanical Engineering</option>
+                <option>Civil Engineering</option>
+                <option>Artificial Intelligence and Machine Learning</option>
+                <option>Data Science</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="project-semester">Semester</label>
+              <select id="project-semester">
+                <option value="">Select semester</option>
+                <option>1</option><option>2</option><option>3</option>
+                <option>4</option><option>5</option><option>6</option>
+                <option>7</option><option>8</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="project-deadline">Deadline</label>
+              <input type="date" id="project-deadline" />
+            </div>
+
+            <div class="form-group">
+              <label for="project-guide">Project guide (optional)</label>
+              <select id="project-guide">
+                <option value="">Assign later</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="project-team">Team members (optional)</label>
+              <input type="text" id="project-team"
+                     placeholder="Comma separated names" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="project-file">Upload project file</label>
+            <input type="file" id="project-file"
+                   accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.xls,.xlsx" />
+            <p class="field-hint">
+              Allowed: PDF, PPT, PPTX, DOC, DOCX, CSV, XLS, XLSX · Max 10&nbsp;MB.
+            </p>
+            <div id="project-file-info" class="file-info" hidden></div>
+            <p class="field-error" data-error-for="project-file" role="alert"></p>
+          </div>
+        </form>
+      </div>
+
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close">Cancel</button>
+        <button type="submit" form="form-project" class="btn btn-primary"
+                id="btn-save-project">
+          Save project
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- Project details modal (read + review)                            -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-details" hidden>
+    <div class="modal modal--lg" role="dialog" aria-modal="true"
+         aria-labelledby="modal-details-title">
+      <header class="modal-header">
+        <h2 id="modal-details-title">Project details</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body" id="details-body"></div>
+      <footer class="modal-footer" id="details-footer"></footer>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- Review action modal (accept / reject / request changes)          -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="modal-review" hidden>
+    <div class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="modal-review-title">
+      <header class="modal-header">
+        <h2 id="modal-review-title">Review project</h2>
+        <button type="button" class="icon-btn modal-close" aria-label="Close">×</button>
+      </header>
+      <div class="modal-body">
+        <input type="hidden" id="review-project-id" />
+        <input type="hidden" id="review-action" />
+
+        <p class="muted" id="review-context"></p>
+
+        <div class="form-group">
+          <label for="review-feedback">Feedback <span class="req" id="review-req">*</span></label>
+          <textarea id="review-feedback" rows="5"
+                    placeholder="Explain your decision so the student can act on it."></textarea>
+          <p class="field-hint" id="review-hint"></p>
+          <p class="field-error" data-error-for="review-feedback" role="alert"></p>
+        </div>
+
+        <div class="form-group" id="review-progress-group" hidden>
+          <label for="review-progress">Set progress percentage</label>
+          <input type="range" id="review-progress" min="0" max="100" step="5" value="0" />
+          <output id="review-progress-value">0%</output>
+        </div>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-ghost modal-close">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-submit-review">
+          Submit review
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/projects.js"></script>
+</body>
+</html>

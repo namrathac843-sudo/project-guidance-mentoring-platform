@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in · Project Guidance &amp; Mentoring Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="auth-body" data-page="login">
+
+  <div class="auth-layout">
+
+    <aside class="auth-side" aria-hidden="true">
+      <a href="index.html" class="brand brand--light">
+        <span class="brand-mark">PG</span>
+        <span class="brand-text">Project&nbsp;Guidance&nbsp;&amp;&nbsp;Mentoring</span>
+      </a>
+      <h2>Welcome back.</h2>
+      <p>
+        Log in to submit projects, review submissions, or run mentoring sessions.
+        Your role determines what you see on the dashboard.
+      </p>
+      <ul class="auth-side-list">
+        <li>Students submit and track projects</li>
+        <li>Lecturers review and give feedback</li>
+        <li>Alumni mentor across the industry</li>
+        <li>Admins manage users and monitor activity</li>
+      </ul>
+    </aside>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <header class="auth-card-head">
+          <h1>Log in</h1>
+          <p>Enter your college credentials to continue.</p>
+        </header>
+
+        <form id="login-form" novalidate autocomplete="on">
+          <div class="form-group">
+            <label for="login-email">College email address</label>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              autocomplete="username"
+              required
+              placeholder="e.g. 1GA21CS001@gat.ac.in"
+            />
+            <p class="field-error" data-error-for="login-email" role="alert"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-with-action">
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                autocomplete="current-password"
+                required
+                placeholder="Your password"
+              />
+              <button type="button" class="input-action"
+                      data-toggle-password="login-password"
+                      aria-label="Show password">Show</button>
+            </div>
+            <p class="field-error" data-error-for="login-password" role="alert"></p>
+          </div>
+
+          <div class="form-row form-row--between">
+            <label class="checkbox">
+              <input type="checkbox" id="login-remember" />
+              <span>Remember my email on this device</span>
+            </label>
+            <a href="#forgot" class="link-small" id="open-forgot">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="login-submit">
+            Log in
+          </button>
+
+          <p class="form-footer">
+            Don't have an account? <a href="register.html">Create one now</a>
+          </p>
+        </form>
+
+        <!-- ------------------------------------------------------ -->
+        <!-- Forgot-password panel (LOCAL DEMO FLOW)                 -->
+        <!-- No email server is configured. The token is shown on    -->
+        <!-- screen instead of being emailed. See README §17.        -->
+        <!-- ------------------------------------------------------ -->
+        <section id="forgot-panel" class="forgot-panel" hidden>
+          <h2>Reset your password</h2>
+          <p class="muted">
+            This is a classroom demo. The reset token will be shown on this page
+            instead of being emailed.
+          </p>
+
+          <form id="forgot-form" novalidate>
+            <div class="form-group">
+              <label for="forgot-email">College email address</label>
+              <input type="email" id="forgot-email" required
+                     placeholder="you@gat.ac.in" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              Generate reset token
+            </button>
+          </form>
+
+          <div id="forgot-result" hidden>
+            <div class="callout callout-warn">
+              <strong>Demo token (shown only because no mail server is configured):</strong>
+              <code id="forgot-token-display"></code>
+            </div>
+
+            <form id="reset-form" novalidate>
+              <div class="form-group">
+                <label for="reset-token">Reset token</label>
+                <input type="text" id="reset-token" required />
+              </div>
+              <div class="form-group">
+                <label for="reset-password">New password</label>
+                <div class="input-with-action">
+                  <input type="password" id="reset-password" required minlength="8" />
+                  <button type="button" class="input-action"
+                          data-toggle-password="reset-password"
+                          aria-label="Show password">Show</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reset-confirm">Confirm new password</label>
+                <input type="password" id="reset-confirm" required minlength="8" />
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                Update password
+              </button>
+            </form>
+          </div>
+
+          <button type="button" class="btn btn-ghost btn-block" id="close-forgot">
+            Back to login
+          </button>
+        </section>
+
+        <div id="login-alert" class="alert" hidden role="alert"></div>
+      </div>
+
+      <p class="auth-footnote">
+        <a href="index.html">&larr; Back to home</a>
+      </p>
+    </main>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/validators.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
