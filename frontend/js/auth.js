@@ -9,6 +9,18 @@
    Local Storage authentication is a DEMONSTRATION ONLY. Passwords are
    hashed with a toy algorithm on the client. Anyone with DevTools can
    read or modify the store. This is NOT production-safe. See README.
+
+   COLLEGE-EMAIL POLICY (this revision)
+   ------------------------------------
+   Every role must register with an official college email:
+     * Student  → <USN>@<COLLEGE_EMAIL_DOMAIN>
+                  (e.g. 1ga21cs001@gat.ac.in)
+     * Lecturer → any local-part @<COLLEGE_EMAIL_DOMAIN>
+                  (e.g. meera.rao@gat.ac.in)
+     * Alumni   → any local-part @<COLLEGE_EMAIL_DOMAIN>
+                  (e.g. arjun.k@gat.ac.in)
+   Registration with a personal email (gmail, yahoo, …) is rejected with
+   the message: "You must register using your college email."
    ===================================================================== */
 
 window.PGMPAuth = (function () {
@@ -40,11 +52,18 @@ window.PGMPAuth = (function () {
       sections.forEach(s => {
         s.hidden = s.dataset.roleSection !== role;
       });
+
+      // Email hint text depends on the selected role.
       if (emailHint) {
+        const domain = V().COLLEGE_EMAIL_DOMAIN;
         if (role === 'student') {
-          emailHint.innerHTML = `Format: <code>&lt;USN&gt;@${V().COLLEGE_EMAIL_DOMAIN}</code>`;
+          emailHint.innerHTML =
+            `Student emails must match your USN: <code>&lt;USN&gt;@${domain}</code>` +
+            ` (e.g. <code>1ga21cs001@${domain}</code>).`;
         } else {
-          emailHint.textContent = 'Your college email address.';
+          emailHint.innerHTML =
+            `You must register using your official college email ` +
+            `(ends with <code>@${domain}</code>).`;
         }
       }
     }
@@ -89,7 +108,7 @@ window.PGMPAuth = (function () {
         confirmPassword: document.getElementById('reg-confirm').value,
       };
 
-      // Role-specific
+      // Role-specific fields
       if (role === 'student') {
         data.usn = document.getElementById('reg-usn').value.trim().toUpperCase();
         data.semester = document.getElementById('reg-semester').value;
@@ -110,7 +129,7 @@ window.PGMPAuth = (function () {
         data.skills = [];
       }
 
-      // Validate
+      // --- Standard validation (name, email format, password, USN) ---
       const result = V().validateRegistration(data, role);
       if (!result.ok) {
         Object.entries(result.errors).forEach(([field, msg]) => V().setFieldError(field, msg));
@@ -119,12 +138,64 @@ window.PGMPAuth = (function () {
         return;
       }
 
+      // ============================================================
+      // STRICT COLLEGE-EMAIL ENFORCEMENT
+      // ------------------------------------------------------------
+      // Every role must use an official college email address.
+      //   * Student  → <USN>@<domain>  (already checked in validators.js)
+      //   * Lecturer → any local-part @<domain>
+      //   * Alumni   → any local-part @<domain>
+      // ============================================================
+      const domain = (V().COLLEGE_EMAIL_DOMAIN || '').toLowerCase();
+      const domainSuffix = '@' + domain;
+
+      if (!domain || !data.email.endsWith(domainSuffix)) {
+        V().setFieldError(
+          'reg-email',
+          `You must register using your college email (ends with ${domainSuffix}).`
+        );
+        showAlert(
+          alertBox,
+          'error',
+          `You must register using your official college email. ` +
+          `Only emails ending with ${domainSuffix} are allowed.`
+        );
+        // Move focus to the email field so the user sees the error.
+        const emailEl = document.getElementById('reg-email');
+        if (emailEl) emailEl.focus();
+        return;
+      }
+
+      // ============================================================
+      // LECTURER / ALUMNI local-part sanity check
+      // ------------------------------------------------------------
+      // Reject obviously fake local-parts such as "admin@", "root@",
+      // "test@" to keep the directory tidy for the demo.
+      // ============================================================
+      if (role === 'lecturer' || role === 'alumni') {
+        const localPart = data.email.slice(0, data.email.length - domainSuffix.length);
+        const blocked = ['admin', 'root', 'test', 'user', 'demo', 'null', 'undefined'];
+        if (!localPart || blocked.includes(localPart)) {
+          V().setFieldError(
+            'reg-email',
+            'Please use your real staff / alumni email (for example firstname.lastname).'
+          );
+          showAlert(
+            alertBox,
+            'error',
+            'That email prefix is not allowed. Please register with your official college email.'
+          );
+          return;
+        }
+      }
+
+      // --- Terms acknowledgement ---------------------------------
       if (!document.getElementById('reg-terms').checked) {
         showAlert(alertBox, 'error', 'Please accept the demonstration notice before continuing.');
         return;
       }
 
-      // Duplicate checks
+      // --- Duplicate checks --------------------------------------
       if (S().users.byEmail(data.email)) {
         V().setFieldError('reg-email', 'An account with this email already exists.');
         showAlert(alertBox, 'error', 'That email is already registered.');
@@ -136,7 +207,7 @@ window.PGMPAuth = (function () {
         return;
       }
 
-      // Save
+      // --- Save the user -----------------------------------------
       const user = {
         id: S().newId('user'),
         fullName: data.fullName,
@@ -182,9 +253,13 @@ window.PGMPAuth = (function () {
       }
 
       S().users.insert(user);
-      S().notify(user.id, 'account', 'Welcome',
+      S().notify(
+        user.id,
+        'account',
+        'Welcome',
         'Your account was created successfully. Complete your profile to get started.',
-        'profile.html');
+        'profile.html'
+      );
 
       showAlert(alertBox, 'success', 'Registration successful. Redirecting to login…');
       setTimeout(() => { window.location.href = 'login.html?registered=1'; }, 900);
@@ -240,18 +315,66 @@ window.PGMPAuth = (function () {
 
       if (!email)    { V().setFieldError('login-email', 'Email is required.'); return; }
       if (!password) { V().setFieldError('login-password', 'Password is required.'); return; }
-      if (!V().isEmail(email)) { V().setFieldError('login-email', 'Enter a valid email address.'); return; }
+      if (!V().isEmail(email)) {
+        V().setFieldError('login-email', 'Enter a valid email address.');
+        return;
+      }
 
+      // -----------------------------------------------------------
+      // 1. The email must be an official college email
+      // -----------------------------------------------------------
+      const domainSuffix = '@' + (V().COLLEGE_EMAIL_DOMAIN || '').toLowerCase();
+      if (domainSuffix.length > 1 && !email.endsWith(domainSuffix)) {
+        V().setFieldError(
+          'login-email',
+          `Please use your college email (ends with ${domainSuffix}).`
+        );
+        showAlert(
+          alertBox,
+          'error',
+          `You must log in using your official college email (${domainSuffix}).`
+        );
+        return;
+      }
+
+      // -----------------------------------------------------------
+      // 2. The email must exist in the college directory
+      // -----------------------------------------------------------
       const user = S().users.byEmail(email);
-      if (!user || user.passwordHash !== S().demoHash(password)) {
-        showAlert(alertBox, 'error', 'Invalid email or password.');
-        return;
-      }
-      if (user.status === 'Deactivated') {
-        showAlert(alertBox, 'error', 'This account is deactivated. Please contact an administrator.');
+      if (!user) {
+        V().setFieldError('login-email', 'This email is not registered.');
+        showAlert(
+          alertBox,
+          'error',
+          'Email does not exist. Please register using your official college email.'
+        );
         return;
       }
 
+      // -----------------------------------------------------------
+      // 3. The password must match
+      // -----------------------------------------------------------
+      if (user.passwordHash !== S().demoHash(password)) {
+        V().setFieldError('login-password', 'Incorrect password.');
+        showAlert(alertBox, 'error', 'Incorrect password. Please try again.');
+        return;
+      }
+
+      // -----------------------------------------------------------
+      // 4. The account must be active
+      // -----------------------------------------------------------
+      if (user.status === 'Deactivated') {
+        showAlert(
+          alertBox,
+          'error',
+          'This account is deactivated. Please contact an administrator.'
+        );
+        return;
+      }
+
+      // -----------------------------------------------------------
+      // 5. Success
+      // -----------------------------------------------------------
       S().setCurrentSession({
         userId: user.id,
         token: 'local-' + S().newId('sess'),
@@ -295,20 +418,39 @@ window.PGMPAuth = (function () {
       forgotForm.addEventListener('submit', (ev) => {
         ev.preventDefault();
         const email = document.getElementById('forgot-email').value.trim().toLowerCase();
-        const user = S().users.byEmail(email);
-        if (!user) {
-          showAlert(alertBox, 'warning',
-            'If that email is registered, a reset token would be generated.');
+
+        // Enforce the same college-email rule here.
+        const domainSuffix = '@' + (V().COLLEGE_EMAIL_DOMAIN || '').toLowerCase();
+        if (domainSuffix.length > 1 && !email.endsWith(domainSuffix)) {
+          showAlert(
+            alertBox,
+            'error',
+            `Please enter your college email (ends with ${domainSuffix}).`
+          );
           return;
         }
+
+        const user = S().users.byEmail(email);
+        if (!user) {
+          showAlert(
+            alertBox,
+            'warning',
+            'This email is not registered. If you believe this is wrong, contact an administrator.'
+          );
+          return;
+        }
+
         // DEMO ONLY: the token is shown on screen.
         const token = 'reset-' + S().newId('tok');
         sessionStorage.setItem('pgmp_reset_' + token, user.id);
         document.getElementById('forgot-token-display').textContent = token;
         document.getElementById('reset-token').value = token;
         forgotResult.hidden = false;
-        showAlert(alertBox, 'info',
-          'Demo mode: the reset token is shown on screen because no mail server is configured.');
+        showAlert(
+          alertBox,
+          'info',
+          'Demo mode: the reset token is shown on screen because no mail server is configured.'
+        );
       });
     }
 
@@ -320,11 +462,17 @@ window.PGMPAuth = (function () {
         const confirm = document.getElementById('reset-confirm').value;
 
         const userId = sessionStorage.getItem('pgmp_reset_' + token);
-        if (!userId) { showAlert(alertBox, 'error', 'That reset token is invalid or already used.'); return; }
+        if (!userId) {
+          showAlert(alertBox, 'error', 'That reset token is invalid or already used.');
+          return;
+        }
 
         const problem = V().passwordProblem(pw);
         if (problem) { showAlert(alertBox, 'error', problem); return; }
-        if (pw !== confirm) { showAlert(alertBox, 'error', 'Passwords do not match.'); return; }
+        if (pw !== confirm) {
+          showAlert(alertBox, 'error', 'Passwords do not match.');
+          return;
+        }
 
         S().users.update(userId, { passwordHash: S().demoHash(pw) });
         sessionStorage.removeItem('pgmp_reset_' + token);

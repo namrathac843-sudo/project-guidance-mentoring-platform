@@ -9,6 +9,13 @@
      * wire up the theme toggle, sidebar toggle, user menu, notif bell
      * provide global helpers: PGMP.toast, PGMP.confirm, PGMP.openModal,
        PGMP.closeModal, PGMP.escapeHtml, PGMP.refreshBell, PGMP.refreshShell
+
+   FIX LOG (this revision)
+   -----------------------
+   1. wireModalCloseButtons() is now actually called from initShell(),
+      and it is guarded so it can only bind once. This makes the
+      "Cancel" buttons, "×" buttons, backdrop clicks, and the Escape
+      key close every modal correctly.
    ===================================================================== */
 
 window.PGMP = (function () {
@@ -333,7 +340,15 @@ window.PGMP = (function () {
     }, 180);
   }
 
+  // -----------------------------------------------------------------
+  // FIX 1: guard flag so the modal close listeners are attached once.
+  // -----------------------------------------------------------------
+  let modalCloseWired = false;
+
   function wireModalCloseButtons() {
+    if (modalCloseWired) return;
+    modalCloseWired = true;
+
     document.addEventListener('click', (e) => {
       const closeBtn = e.target.closest('.modal-close');
       if (closeBtn) {
@@ -417,11 +432,6 @@ window.PGMP = (function () {
         typedGroup.hidden = true;
         yesBtn.disabled = false;
       }
-
-      const cleanup = () => {
-        yesBtn.replaceWith(yesBtn.cloneNode(true)); // strip listeners
-        if (temp) temp.remove();
-      };
 
       // Cancel
       const cancelBtns = modal.querySelectorAll('.modal-close');
@@ -576,6 +586,7 @@ window.PGMP = (function () {
     updateThemeButtons();
     refreshBell(user.id);
     wireGlobalActions(user);
+    wireModalCloseButtons();   // FIX 2: makes Cancel / × / Esc / backdrop work
 
     // Live theme change from the OS when in "system" mode
     const mql = window.matchMedia('(prefers-color-scheme: dark)');
